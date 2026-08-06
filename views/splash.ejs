@@ -23,24 +23,33 @@
         }
         .container {
             text-align: center;
-            width: 100%;
-            max-width: 320px;
+            width: 90%; /* Quase a tela toda */
+            max-width: 600px; /* Limite para não ficar gigante em telas muito largas */
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .logo { 
-            width: 200px; 
-            max-height: 120px; 
+            /* Aumentado drasticamente */
+            width: 100%; 
+            max-width: 450px; /* Tamanho máximo desejado da logo */
+            height: auto; 
             object-fit: contain;
-            margin-bottom: 35px; 
+            margin-bottom: 50px; /* Mais espaço entre logo e barra */
+            
+            /* Filtro para garantir que imagens pretas fiquem visíveis se necessário */
+            /* filter: brightness(0) invert(1); */ /* Descomente essa linha APENAS se sua logo for preta e sumir no fundo */
         }
         .progress-bar-container {
             width: 100%;
-            height: 6px;
-            background: #121212;
-            border-radius: 4px;
+            height: 10px; /* Barra um pouco mais grossa */
+            background: #1a1a1a;
+            border-radius: 5px;
             overflow: hidden;
-            border: 1px solid #262626;
-            margin-bottom: 12px;
+            border: 1px solid #333333;
+            margin-bottom: 15px;
         }
         .progress-bar {
             width: 0%;
@@ -49,7 +58,7 @@
             transition: width 0.1s linear;
         }
         .percentage {
-            font-size: 14px;
+            font-size: 16px; /* Texto maior */
             color: #a1a1aa;
             font-weight: 600;
             letter-spacing: 1px;
@@ -58,7 +67,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Exibe a logo centralizada -->
         <img src="/logo.png" alt="Logo" class="logo" id="logoImg">
         <div class="progress-bar-container">
             <div class="progress-bar" id="progressBar"></div>
@@ -67,19 +75,19 @@
     </div>
 
     <script>
-        // Caso a imagem demore ou dê erro ao carregar, exibe um texto alternativo elegante
+        // Caso a imagem não exista, o texto de emergência aparece
         document.getElementById('logoImg').onerror = function() {
             this.style.display = 'none';
             let fallback = document.createElement('h1');
             fallback.innerText = "GOATPAY";
             fallback.style.color = "#ffffff";
-            fallback.style.marginBottom = "35px";
-            fallback.style.fontSize = "28px";
-            fallback.style.letterSpacing = "2px";
+            fallback.style.marginBottom = "50px";
+            fallback.style.fontSize = "48px";
+            fallback.style.letterSpacing = "3px";
             this.parentNode.insertBefore(fallback, this);
         };
 
-        let duration = 6000; // 6 segundos
+        let duration = 6000; 
         let intervalTime = 60; 
         let steps = duration / intervalTime;
         let currentStep = 0;
@@ -94,6 +102,7 @@
 
             if (percent >= 100) {
                 clearInterval(timer);
+                // Redireciona após os 6s
                 window.location.href = '/cadastro';
             }
         }, intervalTime);
