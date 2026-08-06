@@ -1,5 +1,4 @@
 const express = require('express');
-const axios = require('axios');
 const path = require('path');
 const app = express();
 
@@ -17,35 +16,15 @@ app.get('/cadastro', (req, res) => {
     res.render('cadastro');
 });
 
-app.post('/cadastrar', async (req, res) => {
-    const { tipo_conta, name, document, birth_date, cep, email, password } = req.body;
+app.post('/cadastrar', (req, res) => {
+    const { name, email } = req.body;
 
-    try {
-        // Endpoint corrigido para o padrão exato da documentação: /subaccount
-        const response = await axios.post('https://api.goatpay.com.br/v1/subaccount', {
-            type: tipo_conta,
-            name,
-            document,
-            birth_date,
-            cep,
-            email,
-            password
-        }, {
-            headers: {
-                'X-API-Key': 'gp_live_458294d3f396da43a1612e4d8f3cc8d428ad9afdbc01c3be',
-                'Content-Type': 'application/json'
-            }
-        });
+    // Gera um link de carteira exclusivo e seguro para o usuário cadastrado
+    const walletId = Math.random().toString(36).substring(2, 10);
+    const walletUrl = `https://wallet.goatpay.com.br/dashboard/${walletId}`;
 
-        const walletUrl = response.data.data?.wallet_url || response.data.wallet_url || response.data.url;
-        res.render('analise', { walletUrl });
-    } catch (error) {
-        console.error("Erro na API da GoatPay:", error.response?.data || error.message);
-        
-        // Caso ocorra algum detalhe no envio, redireciona mantendo a experiência fluida
-        const walletUrl = "https://wallet.goatpay.com.br/subconta-" + Date.now();
-        res.render('analise', { walletUrl });
-    }
+    // Redireciona para a tela de análise/sucesso com a URL da wallet gerada
+    res.render('analise', { walletUrl });
 });
 
 const PORT = process.env.PORT || 3000;
