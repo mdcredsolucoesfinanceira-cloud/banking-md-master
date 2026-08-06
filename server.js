@@ -9,22 +9,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota inicial exibe a Splash Screen com a logo em fundo preto
+// Rota inicial - Splash Screen com a logo em fundo preto
 app.get('/', (req, res) => {
     res.render('splash');
 });
 
-// Rota do formulário de cadastro idêntico ao da GoatPay
+// Rota do formulário de cadastro
 app.get('/cadastro', (req, res) => {
     res.render('cadastro');
 });
 
-// Rota que envia os dados automaticamente para a API da GoatPay
+// Envio automático para a API oficial da GoatPay
 app.post('/cadastrar', async (req, res) => {
     const { tipo_conta, name, document, birth_date, cep, email, password } = req.body;
 
     try {
-        // Requisição usando a URL base oficial e o header X-API-Key correto
+        // Envia requisição com a sua chave de API oficial
         const response = await axios.post('https://api.goatpay.com.br/v1/subaccounts', {
             type: tipo_conta,
             name,
@@ -35,18 +35,18 @@ app.post('/cadastrar', async (req, res) => {
             password
         }, {
             headers: {
-                'X-API-Key': 'gp_live_SUA_CHAVE_AQUI', // Substitua pela sua chave real gerada no painel
+                'X-API-Key': 'gp_live_458294d3f396da43a1612e4d8f3cc8d428ad9afdbc01c3be',
                 'Content-Type': 'application/json'
             }
         });
 
-        // Captura o Wallet URL retornado pela API
-        const walletUrl = response.data.data?.wallet_url || response.data.wallet_url || "https://wallet.goatpay.com.br/subconta";
+        // Captura o Wallet URL retornado da API da GoatPay
+        const walletUrl = response.data.data?.wallet_url || response.data.wallet_url || response.data.url;
         res.render('analise', { walletUrl });
     } catch (error) {
-        console.error("Erro API GoatPay:", error.response?.data || error.message);
+        console.error("Erro na API da GoatPay:", error.response?.data || error.message);
         
-        // Tela de análise exibida após o envio (mesmo em caso de teste sem chave ativa)
+        // Exibe a tela de análise enquanto ajustamos o endpoint final se necessário
         const walletUrl = "https://wallet.goatpay.com.br/pendente-" + Date.now();
         res.render('analise', { walletUrl });
     }
