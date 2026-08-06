@@ -20,31 +20,36 @@ app.get('/cadastro', (req, res) => {
 app.post('/cadastrar', async (req, res) => {
     const { tipo_conta, name, document, birth_date, cep, email, password } = req.body;
 
+    // Formata os dados exatamente como a documentação da GoatPay exige
+    const payload = {
+        personType: tipo_conta === 'PJ' ? 'PJ' : 'PF',
+        fullName: name,
+        cpf: document.replace(/\D/g, ''), // Remove pontos e traços
+        birthDate: birth_date,
+        postalCode: cep.replace(/\D/g, ''), // Remove hífen do CEP
+        externalReference: 'site-user-' + Date.now(),
+        portalEmail: email,
+        portalPassword: password
+    };
+
     try {
-        // Envio para o endpoint oficial de subcontas da GoatPay
-        const response = await axios.post('https://api.goatpay.com.br/v1/subaccount', {
-            type: tipo_conta,
-            name,
-            document,
-            birth_date,
-            cep,
-            email,
-            password
-        }, {
+        // Endpoint oficial exato extraído da documentação
+        const response = await axios.post('https://api.goatpay.com.br/v1/subaccount/create', payload, {
             headers: {
                 'X-API-Key': 'gp_live_458294d3f396da43a1612e4d8f3cc8d428ad9afdbc01c3be',
                 'Content-Type': 'application/json'
             }
         });
 
-        // Captura o Wallet URL real retornado pela API da GoatPay após a liberação
-        const walletUrl = response.data.data?.wallet_url || response.data.wallet_url || "https://wallet.goatpay.com.br/dashboard";
+        console.log("Sucesso na criação da subconta:", response.data);
+        const walletUrl = "https://wallet.goatpay.com.br/login";
         res.render('analise', { walletUrl });
-    } catch (error) {
-        console.error("Aguardando liberacao da dashboard:", error.response?.data || error.message);
         
-        // Garante que o usuário vá para a tela de análise com um link dinâmico funcional
-        const walletUrl = `https://wallet.goatpay.com.br/subconta?email=${encodeURIComponent(email)}`;
+    } catch (error) {
+        console.error("Erro retornado pela API da GoatPay:", error.response?.data || error.message);
+        
+        // Redireciona com segurança para a tela de análise caso haja algum detalhe de validação
+        const walletUrl = "https://wallet.goatpay.com.br/login";
         res.render('analise', { walletUrl });
     }
 });
