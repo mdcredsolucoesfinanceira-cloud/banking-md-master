@@ -8,16 +8,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => res.render('index'));
-app.get('/login', (req, res) => res.render('login'));
-app.get('/cadastro', (req, res) => res.render('cadastro'));
-app.get('/extrato', (req, res) => res.render('extrato'));
-app.get('/analise', (req, res) => res.render('analise'));
-app.get('/pix-enviar', (req, res) => res.render('pix-enviar'));
-app.get('/pix-receber', (req, res) => res.render('pix-receber'));
-app.get('/splash', (req, res) => res.render('splash'));
+// Função segura para renderizar as páginas sem derrubar o servidor se faltar algo
+const renderSafe = (viewName) => (req, res) => {
+  try {
+    res.render(viewName);
+  } catch (err) {
+    res.status(500).send(`Erro ao carregar a página ${viewName}: ${err.message}`);
+  }
+};
+
+app.get('/', renderSafe('index'));
+app.get('/login', renderSafe('login'));
+app.get('/cadastro', renderSafe('cadastro'));
+app.get('/extrato', renderSafe('extrato'));
+app.get('/analise', renderSafe('analise'));
+app.get('/pix-enviar', renderSafe('pix-enviar'));
+app.get('/pix-receber', renderSafe('pix-receber'));
+app.get('/splash', renderSafe('splash'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor MD Master ativo na porta ${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
