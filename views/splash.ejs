@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carregando...</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: #0f172a; 
+            color: #f8fafc; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 320px;
+            padding: 20px;
+        }
+        .logo { 
+            width: 180px; 
+            max-width: 80%; 
+            height: auto; 
+            margin-bottom: 30px; 
+            object-fit: contain;
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #1e293b;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            margin-bottom: 12px;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #22c55e;
+            transition: width 0.1s linear;
+        }
+        .percentage {
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="/logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="percentage" id="percentageText">0%</div>
+    </div>
+
+    <script>
+        let duration = 6000; // 6 segundos
+        let intervalTime = 60; // atualização a cada 60ms
+        let steps = duration / intervalTime;
+        let currentStep = 0;
+
+        let timer = setInterval(() => {
+            currentStep++;
+            let percent = Math.floor((currentStep / steps) * 100);
+            if (percent > 100) percent = 100;
+
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('percentageText').innerText = percent + '%';
+
+            if (percent >= 100) {
+                clearInterval(timer);
+                window.location.href = '/cadastro';
+            }
+        }, intervalTime);
+    </script>
+</body>
+</html>

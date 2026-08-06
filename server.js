@@ -9,7 +9,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Rota inicial exibe a Splash Screen com a barra de 6 segundos
 app.get('/', (req, res) => {
+    res.render('splash');
+});
+
+// Rota do formulário de cadastro idêntico ao da GoatPay
+app.get('/cadastro', (req, res) => {
     res.render('cadastro');
 });
 
@@ -17,7 +23,6 @@ app.post('/cadastrar', async (req, res) => {
     const { tipo_conta, name, document, birth_date, cep, email, password } = req.body;
 
     try {
-        // Envio automático para a API da GoatPay com todos os campos preenchidos
         const response = await axios.post('https://api.goatpay.com/v1/subaccounts', {
             type: tipo_conta,
             name,
@@ -37,7 +42,6 @@ app.post('/cadastrar', async (req, res) => {
         res.render('analise', { walletUrl });
     } catch (error) {
         console.error("Erro API GoatPay:", error.response?.data || error.message);
-        // Fallback para exibir o Wallet URL mesmo se houver simulação de resposta da API
         const walletUrl = "https://wallet.goatpay.com/dashboard-" + Date.now();
         res.render('analise', { walletUrl });
     }
