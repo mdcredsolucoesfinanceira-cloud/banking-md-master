@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota inicial exibe a Splash Screen com a barra de 6 segundos
+// Rota inicial exibe a Splash Screen com a logo em fundo preto
 app.get('/', (req, res) => {
     res.render('splash');
 });
@@ -19,11 +19,13 @@ app.get('/cadastro', (req, res) => {
     res.render('cadastro');
 });
 
+// Rota que envia os dados automaticamente para a API da GoatPay
 app.post('/cadastrar', async (req, res) => {
     const { tipo_conta, name, document, birth_date, cep, email, password } = req.body;
 
     try {
-        const response = await axios.post('https://api.goatpay.com/v1/subaccounts', {
+        // Requisição usando a URL base oficial e o header X-API-Key correto
+        const response = await axios.post('https://api.goatpay.com.br/v1/subaccounts', {
             type: tipo_conta,
             name,
             document,
@@ -33,16 +35,19 @@ app.post('/cadastrar', async (req, res) => {
             password
         }, {
             headers: {
-                'Authorization': 'Bearer SEU_TOKEN_GOATPAY_AQUI',
+                'X-API-Key': 'gp_live_SUA_CHAVE_AQUI', // Substitua pela sua chave real gerada no painel
                 'Content-Type': 'application/json'
             }
         });
 
-        const walletUrl = response.data.wallet_url || response.data.url || "https://wallet.goatpay.com/subconta-" + Math.random().toString(36).substring(7);
+        // Captura o Wallet URL retornado pela API
+        const walletUrl = response.data.data?.wallet_url || response.data.wallet_url || "https://wallet.goatpay.com.br/subconta";
         res.render('analise', { walletUrl });
     } catch (error) {
         console.error("Erro API GoatPay:", error.response?.data || error.message);
-        const walletUrl = "https://wallet.goatpay.com/dashboard-" + Date.now();
+        
+        // Tela de análise exibida após o envio (mesmo em caso de teste sem chave ativa)
+        const walletUrl = "https://wallet.goatpay.com.br/pendente-" + Date.now();
         res.render('analise', { walletUrl });
     }
 });
