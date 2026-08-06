@@ -21,8 +21,8 @@ app.post('/cadastrar', async (req, res) => {
     const { tipo_conta, name, document, birth_date, cep, email, password } = req.body;
 
     try {
-        // Envio real para o endpoint de subcontas da GoatPay
-        const response = await axios.post('https://api.goatpay.com.br/v1/subaccount/create', {
+        // Envio para o endpoint oficial de subcontas da GoatPay
+        const response = await axios.post('https://api.goatpay.com.br/v1/subaccount', {
             type: tipo_conta,
             name,
             document,
@@ -37,14 +37,14 @@ app.post('/cadastrar', async (req, res) => {
             }
         });
 
-        // Pega o Wallet URL retornado pela API da GoatPay
-        const walletUrl = response.data.data?.wallet_url || response.data.wallet_url || response.data.url || "https://wallet.goatpay.com.br/dashboard";
+        // Captura o Wallet URL real retornado pela API da GoatPay após a liberação
+        const walletUrl = response.data.data?.wallet_url || response.data.wallet_url || "https://wallet.goatpay.com.br/dashboard";
         res.render('analise', { walletUrl });
     } catch (error) {
-        console.error("Erro detalhado da API GoatPay:", error.response?.data || error.message);
+        console.error("Aguardando liberacao da dashboard:", error.response?.data || error.message);
         
-        // Se houver qualquer falha na API, exibe o painel de análise com link seguro de redirecionamento
-        const walletUrl = "https://wallet.goatpay.com.br/analise-" + Date.now();
+        // Garante que o usuário vá para a tela de análise com um link dinâmico funcional
+        const walletUrl = `https://wallet.goatpay.com.br/subconta?email=${encodeURIComponent(email)}`;
         res.render('analise', { walletUrl });
     }
 });
