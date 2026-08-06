@@ -3,120 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BANKING MD MASTER - Nova Subconta</title>
+    <title>Cadastro - GoatPay</title>
     <style>
-        body {
-            margin: 0;
-            background-color: #0b192c;
-            font-family: Arial, sans-serif;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .card {
-            background-color: #112238;
-            width: 100%;
-            max-width: 400px;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-            box-sizing: border-box;
-            border: 1px solid #1e3a5f;
-        }
-        h2 {
-            font-size: 20px;
-            margin-bottom: 5px;
-            color: #ffffff;
-        }
-        p.subtitle {
-            font-size: 12px;
-            color: #8fa3b8;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-        label {
-            font-size: 13px;
-            color: #00d2ff;
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            background-color: #0b192c;
-            border: 1px solid #234876;
-            border-radius: 8px;
-            color: #ffffff;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        input:focus, select:focus {
-            border-color: #00d2ff;
-            outline: none;
-        }
-        .section-title {
-            font-size: 13px;
-            color: #8fa3b8;
-            border-top: 1px solid #1e3a5f;
-            padding-top: 15px;
-            margin-top: 10px;
-            margin-bottom: 12px;
-        }
-        .btn-submit {
-            background-color: #00d2ff;
-            color: #0b192c;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center; }
+        .logo { width: 120px; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #334155; background: #0f172a; color: #fff; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #22c55e; border: none; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #16a34a; }
     </style>
 </head>
 <body>
-
     <div class="card">
-        <h2>Criar Nova Subconta</h2>
-        <p class="subtitle">Cadastre sua carteira vinculada à conta principal para organizar saldos e operar via API.</p>
-
-        <form action="/criar-conta" method="POST">
-            <label>Tipo de titular</label>
-            <select name="tipo">
-                <option value="PF">Pessoa física (PF)</option>
-                <option value="PJ">Pessoa jurídica (PJ)</option>
-            </select>
-
-            <label>Nome completo</label>
-            <input type="text" name="nome" placeholder="Digite seu nome completo" required>
-
-            <label>CPF</label>
-            <input type="text" name="cpf" placeholder="000.000.000-00" required>
-
-            <label>Data de nascimento</label>
-            <input type="date" name="nascimento" required>
-
-            <label>CEP</label>
-            <input type="text" name="cep" placeholder="00000-000" required>
-
-            <div class="section-title">Acesso ao Portal Wallet (opcional)</div>
-
-            <label>E-mail do operador</label>
-            <input type="email" name="email" placeholder="seu@email.com">
-
-            <label>Senha</label>
-            <input type="password" name="senha" placeholder="Sua senha de acesso">
-
-            <button type="submit" class="btn-submit">Criar subconta</button>
+        <!-- Insira o link ou coloque sua logo -->
+        <img src="/logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+        <h2>Cadastro de Subconta</h2>
+        <form action="/cadastrar" method="POST">
+            <input type="text" name="name" placeholder="Nome Completo / Empresa" required>
+            <input type="email" name="email" placeholder="E-mail" required>
+            <input type="text" name="document" placeholder="CPF ou CNPJ" required>
+            <button type="submit">Cadastrar e Criar Subconta</button>
         </form>
     </div>
-
 </body>
 </html>
